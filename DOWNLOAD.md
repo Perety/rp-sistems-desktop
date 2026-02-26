@@ -42,20 +42,6 @@ https://github.com/tu-usuario/rp-sistems/releases/download/v1.0.0/RP-SISTEMS-1.0
 
 ---
 
-### 🌐 **APLICACIÓN WEB**
-
-#### 📱 **Acceso Directo por Navegador**
-```
-🔗 ENLACE WEB DIRECTO:
-https://rp-sistems.vercel.app
-```
-- **Sin instalación requerida**
-- **Acceso desde cualquier dispositivo**
-- **Actualizaciones automáticas**
-- **Compatible con Chrome, Firefox, Safari, Edge**
-
----
-
 ## 🚀 **INSTRUCCIONES DE INSTALACIÓN**
 
 ### 🖥️ **Instalación de Escritorio**
@@ -235,11 +221,6 @@ https://rp-sistems.vercel.app
 - **Windows**: https://github.com/tu-usuario/rp-sistems/releases/download/v1.0.0/RP-SISTEMS-Setup-1.0.0.exe
 - **macOS**: https://github.com/tu-usuario/rp-sistems/releases/download/v1.0.0/RP-SISTEMS-1.0.0.dmg
 - **Linux**: https://github.com/tu-usuario/rp-sistems/releases/download/v1.0.0/RP-SISTEMS-1.0.0.AppImage
-
-### 🌐 **Acceso Web**
-- **Aplicación Web**: https://rp-sistems.vercel.app
-- **Código Fuente**: https://github.com/tu-usuario/rp-sistems
-- **Documentación**: https://docs.rp-sistems.com
 
 ---
 
