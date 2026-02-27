@@ -19,7 +19,9 @@ let radioChannels = [];
 const defaultChannels = [
   { id: 'general', name: 'General', type: 'public', users: [] },
   { id: 'privado', name: 'Privado', type: 'private', users: [] },
-  { id: 'emergencia', name: 'Emergencia', type: 'emergency', users: [] }
+  { id: 'emergencia', name: 'Emergencia', type: 'emergency', users: [] },
+  { id: 'policia', name: 'Policía', type: 'private', users: [] },
+  { id: 'medicos', name: 'Médicos', type: 'private', users: [] }
 ];
 
 radioChannels = [...defaultChannels];
@@ -88,4 +90,5 @@ io.on('connection', (socket) => {
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
   console.log(`Servidor RP-SISTEMS corriendo en puerto ${PORT}`);
+  console.log(`Accede a http://localhost:${PORT} para usar la aplicación`);
 });

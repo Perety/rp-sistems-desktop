@@ -8,9 +8,12 @@ let serverProcess
 
 function startServer() {
   // Iniciar servidor integrado
-  serverProcess = spawn('node', ['server.js'], {
+  const nodePath = process.platform === 'win32' ? 'node.exe' : 'node';
+  serverProcess = spawn(nodePath, ['server.js'], {
     cwd: __dirname,
-    stdio: 'pipe'
+    stdio: 'pipe',
+    shell: true,
+    env: { ...process.env }
   })
   
   serverProcess.stdout.on('data', (data) => {
