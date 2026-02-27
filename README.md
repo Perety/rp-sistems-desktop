@@ -14,10 +14,6 @@ Sistema de Radio y Comunicación tipo Discord con WebRTC
 - 🔧 **Panel de Administración** completo
 - 🛡️ **Seguridad** y privacidad protegida
 
-## 📄 Licencia
-
-MIT License - Uso gratuito y código abierto
-
 ---
 
 **⚡ Descarga la app y únete a la comunicación en tiempo real.**
