@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Bancario - RP Platform</title>
+    
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- ICONS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- STYLES -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- ECONOMY SPECIFIC STYLES -->
+    <style>
+        :root {
+            --economy-primary: #1a472a;
+            --economy-secondary: #2d5a3d;
+            --economy-accent: #4a7c59;
+            --economy-text: #ffffff;
+            --economy-text-secondary: #b8bcc8;
+            --economy-border: rgba(255, 255, 255, 0.1);
+            --economy-success: #10b981;
+            --economy-warning: #f59e0b;
+            --economy-danger: #ef4444;
+            --economy-info: #3b82f6;
+        }
+
+        /* Theme Variations */
+        [data-theme="emerald"] {
+            --economy-primary: #1a472a;
+            --economy-secondary: #2d5a3d;
+            --economy-accent: #4a7c59;
+        }
+
+        [data-theme="forest"] {
+            --economy-primary: #0f3d0f;
+            --economy-secondary: #1a5e1a;
+            --economy-accent: #2e7d32;
+        }
+
+        [data-theme="gold"] {
+            --economy-primary: #b8860b;
+            --economy-secondary: #daa520;
+            --economy-accent: #ffd700;
+        }
+
+        [data-theme="teal"] {
+            --economy-primary: #004d4d;
+            --economy-secondary: #006666;
+            --economy-accent: #008080;
+        }
+
+        [data-theme="navy"] {
+            --economy-primary: #1a1a3e;
+            --economy-secondary: #16213e;
+            --economy-accent: #0f3460;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--economy-primary) 0%, var(--economy-secondary) 50%, var(--economy-accent) 100%);
+            color: var(--economy-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .economy-layout {
+            display: flex;
+            height: 100vh;
+        }
+
+        .economy-sidebar {
+            width: 280px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--economy-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .economy-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--economy-border);
+            text-align: center;
+        }
+
+        .economy-logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--economy-text);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .economy-subtitle {
+            font-size: 12px;
+            color: var(--economy-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .economy-nav {
+            flex: 1;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .economy-nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--economy-text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .economy-nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--economy-text);
+            border-left-color: var(--economy-success);
+        }
+
+        .economy-nav-item.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--economy-success);
+            border-left-color: var(--economy-success);
+        }
+
+        .economy-nav-item i {
+            width: 20px;
+            margin-right: 12px;
+        }
+
+        .economy-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .economy-topbar {
+            height: 60px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--economy-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+        }
+
+        .economy-topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .economy-topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .economy-theme-selector {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .economy-theme-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .economy-theme-btn:hover {
+            transform: scale(1.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .economy-theme-btn.active {
+            border-color: var(--economy-text);
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .economy-theme-btn.emerald { background: linear-gradient(135deg, #1a472a, #2d5a3d); }
+        .economy-theme-btn.forest { background: linear-gradient(135deg, #0f3d0f, #1a5e1a); }
+        .economy-theme-btn.gold { background: linear-gradient(135deg, #b8860b, #daa520); }
+        .economy-theme-btn.teal { background: linear-gradient(135deg, #004d4d, #006666); }
+        .economy-theme-btn.navy { background: linear-gradient(135deg, #1a1a3e, #16213e); }
+
+        .economy-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .economy-dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .economy-stat-card {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--economy-border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .economy-stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .economy-stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .economy-stat-title {
+            font-size: 14px;
+            color: var(--economy-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .economy-stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .economy-stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--economy-text);
+            margin-bottom: 8px;
+        }
+
+        .economy-stat-change {
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .economy-stat-change.positive {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--economy-success);
+        }
+
+        .economy-stat-change.negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--economy-danger);
+        }
+
+        .economy-card {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--economy-border);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .economy-card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--economy-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .economy-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--economy-text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .economy-card-body {
+            padding: 24px;
+        }
+
+        .economy-search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .economy-search-input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--economy-border);
+            border-radius: 8px;
+            color: var(--economy-text);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .economy-search-input:focus {
+            outline: none;
+            border-color: var(--economy-success);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .economy-search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--economy-text-secondary);
+        }
+
+        .economy-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .economy-table th {
+            text-align: left;
+            padding: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--economy-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--economy-border);
+        }
+
+        .economy-table td {
+            padding: 12px;
+            color: var(--economy-text);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .economy-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .economy-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .economy-badge.completed {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--economy-success);
+        }
+
+        .economy-badge.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--economy-warning);
+        }
+
+        .economy-badge.failed {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--economy-danger);
+        }
+
+        .economy-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .economy-btn-primary {
+            background: var(--economy-success);
+            color: white;
+        }
+
+        .economy-btn-primary:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .economy-btn-success {
+            background: var(--economy-success);
+            color: white;
+        }
+
+        .economy-btn-warning {
+            background: var(--economy-warning);
+            color: white;
+        }
+
+        .economy-btn-danger {
+            background: var(--economy-danger);
+            color: white;
+        }
+
+        .economy-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .economy-user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--economy-success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .economy-user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .economy-user-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--economy-text);
+        }
+
+        .economy-user-role {
+            font-size: 12px;
+            color: var(--economy-text-secondary);
+        }
+
+        .economy-alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .economy-alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--economy-info);
+            color: var(--economy-info);
+        }
+
+        .economy-alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--economy-warning);
+            color: var(--economy-warning);
+        }
+
+        .economy-alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--economy-success);
+            color: var(--economy-success);
+        }
+
+        @media (max-width: 768px) {
+            .economy-layout {
+                flex-direction: column;
+            }
+            
+            .economy-sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .economy-dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body data-theme="emerald">
+    <div class="economy-layout">
+        <!-- Sidebar -->
+        <aside class="economy-sidebar">
+            <div class="economy-header">
+                <div class="economy-logo">
+                    <i class="fas fa-university"></i>
+                    Banco Central
+                </div>
+                <div class="economy-subtitle">Sistema Bancario</div>
+            </div>
+            
+            <nav class="economy-nav">
+                <a href="#dashboard" class="economy-nav-item active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="#accounts" class="economy-nav-item">
+                    <i class="fas fa-users"></i>
+                    Cuentas
+                </a>
+                <a href="#transactions" class="economy-nav-item">
+                    <i class="fas fa-exchange-alt"></i>
+                    Transferencias
+                </a>
+                <a href="#loans" class="economy-nav-item">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    Préstamos
+                </a>
+                <a href="#investments" class="economy-nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    Inversiones
+                </a>
+                <a href="#business" class="economy-nav-item">
+                    <i class="fas fa-store"></i>
+                    Negocios
+                </a>
+                <a href="#cards" class="economy-nav-item">
+                    <i class="fas fa-credit-card"></i>
+                    Tarjetas
+                </a>
+                <a href="#atm" class="economy-nav-item">
+                    <i class="fas fa-credit-card"></i>
+                    Cajeros ATM
+                </a>
+                <a href="#audit" class="economy-nav-item">
+                    <i class="fas fa-history"></i>
+                    Auditoría
+                </a>
+                <a href="#reports" class="economy-nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    Reportes
+                </a>
+                <a href="#settings" class="economy-nav-item">
+                    <i class="fas fa-cog"></i>
+                    Configuración
+                </a>
+                <a href="#admin" class="economy-nav-item" onclick="window.location.href='index.html'">
+                    <i class="fas fa-user-shield"></i>
+                    Panel Admin
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="economy-main">
+            <!-- Topbar -->
+            <header class="economy-topbar">
+                <div class="economy-topbar-left">
+                    <div class="economy-user-info">
+                        <div class="economy-user-avatar">JD</div>
+                        <div class="economy-user-details">
+                            <div class="economy-user-name">John Doe</div>
+                            <div class="economy-user-role">Banquero Senior</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="economy-topbar-right">
+                    <div class="economy-theme-selector">
+                        <span class="text-sm text-gray-400 mr-2">Tema:</span>
+                        <div class="economy-theme-btn emerald active" data-theme="emerald" title="Esmeralda"></div>
+                        <div class="economy-theme-btn forest" data-theme="forest" title="Bosque"></div>
+                        <div class="economy-theme-btn gold" data-theme="gold" title="Oro"></div>
+                        <div class="economy-theme-btn teal" data-theme="teal" title="Verde Azulado"></div>
+                        <div class="economy-theme-btn navy" data-theme="navy" title="Azul Marino"></div>
+                    </div>
+                    
+                    <button class="economy-btn economy-btn-primary">
+                        <i class="fas fa-bell"></i>
+                        <span>Notificaciones</span>
+                    </button>
+                    
+                    <button class="economy-btn economy-btn-danger" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Salir</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="economy-content">
+                <!-- Dashboard Section -->
+                <section id="dashboard-section">
+                    <!-- Stats Grid -->
+                    <div class="economy-dashboard-grid">
+                        <div class="economy-stat-card">
+                            <div class="economy-stat-header">
+                                <div class="economy-stat-title">Total en Cuentas</div>
+                                <div class="economy-stat-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--economy-success);">
+                                    <i class="fas fa-wallet"></i>
+                                </div>
+                            </div>
+                            <div class="economy-stat-value">$2,847,392</div>
+                            <div class="economy-stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                +12.5% este mes
+                            </div>
+                        </div>
+
+                        <div class="economy-stat-card">
+                            <div class="economy-stat-header">
+                                <div class="economy-stat-title">Préstamos Activos</div>
+                                <div class="economy-stat-icon" style="background: rgba(245, 158, 11, 0.2); color: var(--economy-warning);">
+                                    <i class="fas fa-hand-holding-usd"></i>
+                                </div>
+                            </div>
+                            <div class="economy-stat-value">$847,293</div>
+                            <div class="economy-stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                +5.2% este mes
+                            </div>
+                        </div>
+
+                        <div class="economy-stat-card">
+                            <div class="economy-stat-header">
+                                <div class="economy-stat-title">Transacciones Hoy</div>
+                                <div class="economy-stat-icon" style="background: rgba(59, 130, 246, 0.2); color: var(--economy-info);">
+                                    <i class="fas fa-exchange-alt"></i>
+                                </div>
+                            </div>
+                            <div class="economy-stat-value">1,247</div>
+                            <div class="economy-stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                +18% vs ayer
+                            </div>
+                        </div>
+
+                        <div class="economy-stat-card">
+                            <div class="economy-stat-header">
+                                <div class="economy-stat-title">Cuentas Activas</div>
+                                <div class="economy-stat-icon" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6;">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                            </div>
+                            <div class="economy-stat-value">3,847</div>
+                            <div class="economy-stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                +127 nuevas
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Alert -->
+                    <div class="economy-alert economy-alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <strong>Sistema Operativo:</strong> Todos los servicios bancarios funcionando con normalidad.
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity & Quick Actions -->
+                    <div class="economy-dashboard-grid">
+                        <div class="economy-card">
+                            <div class="economy-card-header">
+                                <div class="economy-card-title">
+                                    <i class="fas fa-stream"></i>
+                                    Actividad Reciente
+                                </div>
+                            </div>
+                            <div class="economy-card-body">
+                                <div class="space-y-3">
+                                    <div class="flex items-center gap-3 p-3 rounded-lg bg-white/5">
+                                        <div class="w-2 h-2 rounded-full bg-green-400"></div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-medium">Transferencia de $5,000 a Maria Garcia</div>
+                                            <div class="text-xs text-gray-400">Hace 5 minutos - Completada</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3 p-3 rounded-lg bg-white/5">
+                                        <div class="w-2 h-2 rounded-full bg-blue-400"></div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-medium">Nuevo préstamo aprobado - Robert Chen</div>
+                                            <div class="text-xs text-gray-400">Hace 12 minutos - $25,000</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3 p-3 rounded-lg bg-white/5">
+                                        <div class="w-2 h-2 rounded-full bg-yellow-400"></div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-medium">Cuenta nueva creada - Ana Martinez</div>
+                                            <div class="text-xs text-gray-400">Hace 25 minutos</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="economy-card">
+                            <div class="economy-card-header">
+                                <div class="economy-card-title">
+                                    <i class="fas fa-bolt"></i>
+                                    Acciones Rápidas
+                                </div>
+                            </div>
+                            <div class="economy-card-body">
+                                <div class="economy-dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                                    <div class="economy-stat-card" style="cursor: pointer;">
+                                        <div class="economy-stat-header">
+                                            <div class="economy-stat-title">Nueva Cuenta</div>
+                                            <div class="economy-stat-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--economy-success);">
+                                                <i class="fas fa-plus"></i>
+                                            </div>
+                                        </div>
+                                        <div class="economy-stat-value" style="font-size: 24px;">Crear</div>
+                                    </div>
+                                    <div class="economy-stat-card" style="cursor: pointer;">
+                                        <div class="economy-stat-header">
+                                            <div class="economy-stat-title">Transferencia</div>
+                                            <div class="economy-stat-icon" style="background: rgba(59, 130, 246, 0.2); color: var(--economy-info);">
+                                                <i class="fas fa-exchange-alt"></i>
+                                            </div>
+                                        </div>
+                                        <div class="economy-stat-value" style="font-size: 24px;">Enviar</div>
+                                    </div>
+                                    <div class="economy-stat-card" style="cursor: pointer;">
+                                        <div class="economy-stat-header">
+                                            <div class="economy-stat-title">Nuevo Préstamo</div>
+                                            <div class="economy-stat-icon" style="background: rgba(245, 158, 11, 0.2); color: var(--economy-warning);">
+                                                <i class="fas fa-hand-holding-usd"></i>
+                                            </div>
+                                        </div>
+                                        <div class="economy-stat-value" style="font-size: 24px;">Aprobar</div>
+                                    </div>
+                                    <div class="economy-stat-card" style="cursor: pointer;">
+                                        <div class="economy-stat-header">
+                                            <div class="economy-stat-title">Inversión</div>
+                                            <div class="economy-stat-icon" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6;">
+                                                <i class="fas fa-chart-line"></i>
+                                            </div>
+                                        </div>
+                                        <div class="economy-stat-value" style="font-size: 24px;">Gestionar</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Transactions -->
+                    <div class="economy-card">
+                        <div class="economy-card-header">
+                            <div class="economy-card-title">
+                                <i class="fas fa-history"></i>
+                                Transacciones Recientes
+                            </div>
+                            <button class="economy-btn economy-btn-primary">
+                                <i class="fas fa-eye"></i>
+                                Ver Todas
+                            </button>
+                        </div>
+                        <div class="economy-card-body">
+                            <div class="economy-search-box">
+                                <i class="fas fa-search economy-search-icon"></i>
+                                <input type="text" class="economy-search-input" placeholder="Buscar transacciones...">
+                            </div>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="economy-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Cliente</th>
+                                            <th>Tipo</th>
+                                            <th>Monto</th>
+                                            <th>Estado</th>
+                                            <th>Fecha</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>#TRX-001</td>
+                                            <td>
+                                                <div class="flex items-center gap-2">
+                                                    <div class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-xs text-white">JD</div>
+                                                    <span>John Doe</span>
+                                                </div>
+                                            </td>
+                                            <td>Transferencia</td>
+                                            <td>$5,000</td>
+                                            <td><span class="economy-badge completed">Completada</span></td>
+                                            <td>Hace 5 min</td>
+                                            <td>
+                                                <button class="economy-btn economy-btn-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>#TRX-002</td>
+                                            <td>
+                                                <div class="flex items-center gap-2">
+                                                    <div class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-xs text-white">RC</div>
+                                                    <span>Robert Chen</span>
+                                                </div>
+                                            </td>
+                                            <td>Préstamo</td>
+                                            <td>$25,000</td>
+                                            <td><span class="economy-badge pending">Pendiente</span></td>
+                                            <td>Hace 12 min</td>
+                                            <td>
+                                                <button class="economy-btn economy-btn-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>#TRX-003</td>
+                                            <td>
+                                                <div class="flex items-center gap-2">
+                                                    <div class="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-xs text-white">AM</div>
+                                                    <span>Ana Martinez</span>
+                                                </div>
+                                            </td>
+                                            <td>Depósito</td>
+                                            <td>$1,200</td>
+                                            <td><span class="economy-badge completed">Completada</span></td>
+                                            <td>Hace 25 min</td>
+                                            <td>
+                                                <button class="economy-btn economy-btn-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Theme Switcher
+        document.querySelectorAll('.economy-theme-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const theme = this.dataset.theme;
+                document.body.setAttribute('data-theme', theme);
+                
+                // Update active state
+                document.querySelectorAll('.economy-theme-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Save preference
+                localStorage.setItem('economy-theme', theme);
+            });
+        });
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('economy-theme');
+        if (savedTheme) {
+            document.body.setAttribute('data-theme', savedTheme);
+            document.querySelectorAll('.economy-theme-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.theme === savedTheme);
+            });
+        }
+
+        // Navigation
+        document.querySelectorAll('.economy-nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                // Allow direct links to other pages
+                if (this.getAttribute('onclick')) {
+                    return;
+                }
+                
+                e.preventDefault();
+                
+                // Update active state
+                document.querySelectorAll('.economy-nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Here you would typically load different content based on the section
+                const section = this.getAttribute('href').substring(1);
+                console.log('Loading section:', section);
+                
+                // For now, just show a notification
+                showNotification(`Cargando sección: ${section}`, 'info');
+            });
+        });
+
+        // Notification System
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `economy-alert economy-alert-${type}`;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '9999';
+            notification.style.minWidth = '300px';
+            
+            const icon = type === 'info' ? 'fa-info' : type === 'warning' ? 'fa-exclamation' : 'fa-check';
+            notification.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <div>${message}</div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('¿Estás seguro de que quieres salir del sistema bancario?')) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Simulate real-time updates
+        setInterval(() => {
+            // Update random stats
+            const stats = document.querySelectorAll('.economy-stat-value');
+            const randomStat = stats[Math.floor(Math.random() * stats.length)];
+            const currentValue = parseInt(randomStat.textContent.replace(/[^0-9]/g, ''));
+            const change = Math.floor(Math.random() * 100) - 50;
+            const newValue = Math.max(0, currentValue + change);
+            
+            if (randomStat.textContent.includes('$')) {
+                randomStat.textContent = `$${newValue.toLocaleString()}`;
+            } else {
+                randomStat.textContent = newValue.toLocaleString();
+            }
+        }, 15000);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            showNotification('Sistema bancario inicializado', 'success');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAD/MDT Policial - RP Platform</title>
+    
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- ICONS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- STYLES -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- CAD SPECIFIC STYLES -->
+    <style>
+        :root {
+            --cad-primary: #1a1a2e;
+            --cad-secondary: #16213e;
+            --cad-accent: #0f3460;
+            --cad-text: #ffffff;
+            --cad-text-secondary: #b8bcc8;
+            --cad-border: rgba(255, 255, 255, 0.1);
+            --cad-success: #10b981;
+            --cad-warning: #f59e0b;
+            --cad-danger: #ef4444;
+            --cad-info: #3b82f6;
+        }
+
+        /* Theme Variations */
+        [data-theme="cyan"] {
+            --cad-primary: #0d3b66;
+            --cad-secondary: #1d6fa5;
+            --cad-accent: #2980b9;
+        }
+
+        [data-theme="blue"] {
+            --cad-primary: #1a1a2e;
+            --cad-secondary: #16213e;
+            --cad-accent: #0f3460;
+        }
+
+        [data-theme="green"] {
+            --cad-primary: #0f4c5c;
+            --cad-secondary: #3282b8;
+            --cad-accent: #1b5e3f;
+        }
+
+        [data-theme="purple"] {
+            --cad-primary: #2c003e;
+            --cad-secondary: #512b58;
+            --cad-accent: #8b5a8c;
+        }
+
+        [data-theme="red"] {
+            --cad-primary: #780000;
+            --cad-secondary: #c1121f;
+            --cad-accent: #fdf0d5;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--cad-primary) 0%, var(--cad-secondary) 50%, var(--cad-accent) 100%);
+            color: var(--cad-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .cad-layout {
+            display: flex;
+            height: 100vh;
+        }
+
+        .cad-sidebar {
+            width: 280px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid var(--cad-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cad-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--cad-border);
+            text-align: center;
+        }
+
+        .cad-logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--cad-text);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .cad-subtitle {
+            font-size: 12px;
+            color: var(--cad-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cad-nav {
+            flex: 1;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .cad-nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--cad-text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .cad-nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--cad-text);
+            border-left-color: var(--cad-info);
+        }
+
+        .cad-nav-item.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--cad-info);
+            border-left-color: var(--cad-info);
+        }
+
+        .cad-nav-item i {
+            width: 20px;
+            margin-right: 12px;
+        }
+
+        .cad-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .cad-topbar {
+            height: 60px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--cad-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+        }
+
+        .cad-topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .cad-topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cad-theme-selector {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .cad-theme-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cad-theme-btn:hover {
+            transform: scale(1.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .cad-theme-btn.active {
+            border-color: var(--cad-text);
+            box-shadow: 0 0 10px currentColor;
+        }
+
+        .cad-theme-btn.cyan { background: linear-gradient(135deg, #0d3b66, #1d6fa5); }
+        .cad-theme-btn.blue { background: linear-gradient(135deg, #1a1a2e, #16213e); }
+        .cad-theme-btn.green { background: linear-gradient(135deg, #0f4c5c, #3282b8); }
+        .cad-theme-btn.purple { background: linear-gradient(135deg, #2c003e, #512b58); }
+        .cad-theme-btn.red { background: linear-gradient(135deg, #780000, #c1121f); }
+
+        .cad-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .cad-dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .cad-stat-card {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--cad-border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .cad-stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .cad-stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .cad-stat-title {
+            font-size: 14px;
+            color: var(--cad-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cad-stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .cad-stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--cad-text);
+            margin-bottom: 8px;
+        }
+
+        .cad-stat-change {
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .cad-stat-change.positive {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--cad-success);
+        }
+
+        .cad-stat-change.negative {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--cad-danger);
+        }
+
+        .cad-card {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--cad-border);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .cad-card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--cad-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cad-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--cad-text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cad-card-body {
+            padding: 24px;
+        }
+
+        .cad-search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .cad-search-input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--cad-border);
+            border-radius: 8px;
+            color: var(--cad-text);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .cad-search-input:focus {
+            outline: none;
+            border-color: var(--cad-info);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .cad-search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--cad-text-secondary);
+        }
+
+        .cad-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .cad-table th {
+            text-align: left;
+            padding: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--cad-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--cad-border);
+        }
+
+        .cad-table td {
+            padding: 12px;
+            color: var(--cad-text);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .cad-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .cad-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cad-badge.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--cad-success);
+        }
+
+        .cad-badge.busy {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--cad-warning);
+        }
+
+        .cad-badge.offline {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--cad-danger);
+        }
+
+        .cad-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cad-btn-primary {
+            background: var(--cad-info);
+            color: white;
+        }
+
+        .cad-btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .cad-btn-success {
+            background: var(--cad-success);
+            color: white;
+        }
+
+        .cad-btn-warning {
+            background: var(--cad-warning);
+            color: white;
+        }
+
+        .cad-btn-danger {
+            background: var(--cad-danger);
+            color: white;
+        }
+
+        .cad-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cad-user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--cad-info);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .cad-user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cad-user-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--cad-text);
+        }
+
+        .cad-user-role {
+            font-size: 12px;
+            color: var(--cad-text-secondary);
+        }
+
+        .cad-alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cad-alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--cad-info);
+            color: var(--cad-info);
+        }
+
+        .cad-alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--cad-warning);
+            color: var(--cad-warning);
+        }
+
+        .cad-alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--cad-danger);
+            color: var(--cad-danger);
+        }
+
+        @media (max-width: 768px) {
+            .cad-layout {
+                flex-direction: column;
+            }
+            
+            .cad-sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .cad-dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body data-theme="blue">
+    <div class="cad-layout">
+        <!-- Sidebar -->
+        <aside class="cad-sidebar">
+            <div class="cad-header">
+                <div class="cad-logo">
+                    <i class="fas fa-shield-alt"></i>
+                    CAD/MDT
+                </div>
+                <div class="cad-subtitle">Sistema Policial</div>
+            </div>
+            
+            <nav class="cad-nav">
+                <a href="#dashboard" class="cad-nav-item active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="#citizens" class="cad-nav-item">
+                    <i class="fas fa-users"></i>
+                    Ciudadanos
+                </a>
+                <a href="#vehicles" class="cad-nav-item">
+                    <i class="fas fa-car"></i>
+                    Vehículos
+                </a>
+                <a href="#fines" class="cad-nav-item">
+                    <i class="fas fa-receipt"></i>
+                    Multas
+                </a>
+                <a href="#arrests" class="cad-nav-item">
+                    <i class="fas fa-handcuffs"></i>
+                    Arrestos
+                </a>
+                <a href="#911-calls" class="cad-nav-item">
+                    <i class="fas fa-phone"></i>
+                    Llamadas 911
+                </a>
+                <a href="#bolo" class="cad-nav-item">
+                    <i class="fas fa-search"></i>
+                    Alertas BOLO
+                </a>
+                <a href="#reports" class="cad-nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    Denuncias
+                </a>
+                <a href="#investigations" class="cad-nav-item">
+                    <i class="fas fa-microscope"></i>
+                    Investigaciones
+                </a>
+                <a href="#on-duty" class="cad-nav-item">
+                    <i class="fas fa-badge"></i>
+                    En Servicio
+                </a>
+                <a href="#admin" class="cad-nav-item">
+                    <i class="fas fa-cog"></i>
+                    Panel Admin
+                </a>
+                <a href="#users" class="cad-nav-item">
+                    <i class="fas fa-user-shield"></i>
+                    Usuarios
+                </a>
+                <a href="#audit" class="cad-nav-item">
+                    <i class="fas fa-history"></i>
+                    Auditoría
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="cad-main">
+            <!-- Topbar -->
+            <header class="cad-topbar">
+                <div class="cad-topbar-left">
+                    <div class="cad-user-info">
+                        <div class="cad-user-avatar" data-user-info="avatar">JD</div>
+                        <div class="cad-user-details">
+                            <div class="cad-user-name" data-user-info="name">John Doe</div>
+                            <div class="cad-user-role" data-user-info="role">Oficial de Policía</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="cad-topbar-right">
+                    <div class="cad-theme-selector">
+                        <span class="text-sm text-gray-400 mr-2">Tema:</span>
+                        <div class="cad-theme-btn cyan" data-theme="cyan" title="Cyan"></div>
+                        <div class="cad-theme-btn blue active" data-theme="blue" title="Azul"></div>
+                        <div class="cad-theme-btn green" data-theme="green" title="Verde"></div>
+                        <div class="cad-theme-btn purple" data-theme="purple" title="Púrpura"></div>
+                        <div class="cad-theme-btn red" data-theme="red" title="Rojo"></div>
+                    </div>
+                    
+                    <button class="cad-btn cad-btn-primary">
+                        <i class="fas fa-bell"></i>
+                        <span>Notificaciones</span>
+                    </button>
+                    
+                    <button class="cad-btn cad-btn-danger" onclick="window.authSystem.logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Salir</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="cad-content">
+                <!-- Dashboard Section -->
+                <section id="dashboard-section">
+                    <!-- Stats Grid -->
+                    <div class="cad-dashboard-grid">
+                        <div class="cad-stat-card">
+                            <div class="cad-stat-header">
+                                <div class="cad-stat-title">Oficiales en Servicio</div>
+                                <div class="cad-stat-icon" style="background: rgba(59, 130, 246, 0.2); color: var(--cad-info);">
+                                    <i class="fas fa-badge"></i>
+                                </div>
+                            </div>
+                            <div class="cad-stat-value">12</div>
+                            <div class="cad-stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                +3 esta hora
+                            </div>
+                        </div>
+
+                        <div class="cad-stat-card">
+                            <div class="cad-stat-header">
+                                <div class="cad-stat-title">Llamadas 911 Hoy</div>
+                                <div class="cad-stat-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--cad-success);">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                            </div>
+                            <div class="cad-stat-value">47</div>
+                            <div class="cad-stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                +12 vs ayer
+                            </div>
+                        </div>
+
+                        <div class="cad-stat-card">
+                            <div class="cad-stat-header">
+                                <div class="cad-stat-title">Arrestos Realizados</div>
+                                <div class="cad-stat-icon" style="background: rgba(239, 68, 68, 0.2); color: var(--cad-danger);">
+                                    <i class="fas fa-handcuffs"></i>
+                                </div>
+                            </div>
+                            <div class="cad-stat-value">8</div>
+                            <div class="cad-stat-change negative">
+                                <i class="fas fa-arrow-down"></i>
+                                -2 vs ayer
+                            </div>
+                        </div>
+
+                        <div class="cad-stat-card">
+                            <div class="cad-stat-header">
+                                <div class="cad-stat-title">Multas Emitidas</div>
+                                <div class="cad-stat-icon" style="background: rgba(245, 158, 11, 0.2); color: var(--cad-warning);">
+                                    <i class="fas fa-receipt"></i>
+                                </div>
+                            </div>
+                            <div class="cad-stat-value">$12,450</div>
+                            <div class="cad-stat-change positive">
+                                <i class="fas fa-arrow-up"></i>
+                                +15% este mes
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active Alerts -->
+                    <div class="cad-alert cad-alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>Alerta de Alta Prioridad:</strong> Persecución vehicular en Highway 1, dirección norte.
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity & Officers -->
+                    <div class="cad-dashboard-grid">
+                        <div class="cad-card">
+                            <div class="cad-card-header">
+                                <div class="cad-card-title">
+                                    <i class="fas fa-stream"></i>
+                                    Actividad Reciente
+                                </div>
+                            </div>
+                            <div class="cad-card-body">
+                                <div class="space-y-3">
+                                    <div class="flex items-center gap-3 p-3 rounded-lg bg-white/5">
+                                        <div class="w-2 h-2 rounded-full bg-green-400"></div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-medium">Oficial Smith arrestó a John Doe</div>
+                                            <div class="text-xs text-gray-400">Hace 5 minutos</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3 p-3 rounded-lg bg-white/5">
+                                        <div class="w-2 h-2 rounded-full bg-blue-400"></div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-medium">Nueva llamada 911 - Accidente vehicular</div>
+                                            <div class="text-xs text-gray-400">Hace 12 minutos</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3 p-3 rounded-lg bg-white/5">
+                                        <div class="w-2 h-2 rounded-full bg-yellow-400"></div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-medium">Alerta BOLO emitida - Vehículo robado</div>
+                                            <div class="text-xs text-gray-400">Hace 25 minutos</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cad-card">
+                            <div class="cad-card-header">
+                                <div class="cad-card-title">
+                                    <i class="fas fa-users"></i>
+                                    Oficiales en Servicio
+                                </div>
+                            </div>
+                            <div class="cad-card-body">
+                                <div class="cad-table-container">
+                                    <table class="cad-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Oficial</th>
+                                                <th>Estado</th>
+                                                <th>Ubicación</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-xs text-white">JS</div>
+                                                        <span>John Smith</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="cad-badge active">Activo</span></td>
+                                                <td>Downtown</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-xs text-white">MJ</div>
+                                                        <span>Maria Jones</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="cad-badge busy">Ocupado</span></td>
+                                                <td>Highway 1</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-xs text-white">RB</div>
+                                                        <span>Robert Brown</span>
+                                                    </div>
+                                                </td>
+                                                <td><span class="cad-badge active">Activo</span></td>
+                                                <td>Beach Ave</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="auth-system.js"></script>
+    <script>
+        // Theme Switcher
+        document.querySelectorAll('.cad-theme-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const theme = this.dataset.theme;
+                document.body.setAttribute('data-theme', theme);
+                
+                // Update active state
+                document.querySelectorAll('.cad-theme-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Save preference
+                localStorage.setItem('cad-theme', theme);
+            });
+        });
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('cad-theme');
+        if (savedTheme) {
+            document.body.setAttribute('data-theme', savedTheme);
+            document.querySelectorAll('.cad-theme-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.theme === savedTheme);
+            });
+        }
+
+        // Navigation
+        document.querySelectorAll('.cad-nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active state
+                document.querySelectorAll('.cad-nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Here you would typically load different content based on the section
+                const section = this.getAttribute('href').substring(1);
+                console.log('Loading section:', section);
+                
+                // For now, just show a notification
+                showNotification(`Cargando sección: ${section}`, 'info');
+            });
+        });
+
+        // Notification System
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `cad-alert cad-alert-${type}`;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '9999';
+            notification.style.minWidth = '300px';
+            
+            const icon = type === 'info' ? 'fa-info' : type === 'warning' ? 'fa-exclamation' : 'fa-check';
+            notification.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <div>${message}</div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('¿Estás seguro de que quieres salir del sistema CAD/MDT?')) {
+                window.authSystem.logout();
+            }
+        }
+
+        // Simulate real-time updates
+        setInterval(() => {
+            // Update random stats
+            const stats = document.querySelectorAll('.cad-stat-value');
+            const randomStat = stats[Math.floor(Math.random() * stats.length)];
+            const currentValue = parseInt(randomStat.textContent.replace(/[^0-9]/g, ''));
+            const change = Math.floor(Math.random() * 5) - 2;
+            const newValue = Math.max(0, currentValue + change);
+            
+            if (randomStat.textContent.includes('$')) {
+                randomStat.textContent = `$${newValue.toLocaleString()}`;
+            } else {
+                randomStat.textContent = newValue.toLocaleString();
+            }
+        }, 10000);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            showNotification('Sistema CAD/MDT inicializado', 'success');
+        });
+    </script>
+</body>
+</html>

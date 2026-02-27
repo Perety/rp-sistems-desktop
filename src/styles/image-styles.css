@@ -1,0 +1,234 @@
+/* ESTILOS PARA IMÁGENES SIN FONDO Y PERFIL */
+
+/* Contenedor principal para imágenes con fondo transparente */
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Imágenes con fondo transparente */
+.transparent-image {
+    background: transparent !important;
+    mix-blend-mode: normal !important;
+    isolation: isolate;
+}
+
+/* Para PNG con transparencia - FONDO CHESSBOARD */
+.png-transparent {
+    background: linear-gradient(45deg, 
+        #f0f0f0 25%, 
+        #ffffff 25%, 
+        #ffffff 75%, 
+        #f0f0f0 75%, 
+        #f0f0f0),
+        linear-gradient(45deg, 
+        #f0f0f0 25%, 
+        #ffffff 25%, 
+        #ffffff 75%, 
+        #f0f0f0 75%, 
+        #f0f0f0);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+}
+
+/* Imágenes de productos con fondo transparente */
+.product-image-transparent {
+    background: transparent !important;
+    mix-blend-mode: normal !important;
+    isolation: isolate;
+    object-fit: contain;
+    padding: 8px;
+}
+
+/* Contenedor para imágenes de productos */
+.product-image-container {
+    background: linear-gradient(135deg, var(--accent), var(--bg-hover));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* Imágenes de perfil redondas */
+.profile-image {
+    border-radius: 50%;
+    object-fit: cover;
+    background: transparent !important;
+    image-rendering: crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+}
+
+/* Efecto hover para imágenes de perfil */
+.profile-image-container:hover .profile-image-overlay {
+    opacity: 1;
+}
+
+.profile-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+
+/* Para imágenes de productos */
+.product-image {
+    background: transparent;
+    object-fit: contain;
+    image-rendering: auto;
+    mix-blend-mode: normal;
+}
+
+/* Contenedor para imágenes de productos con fondo */
+.product-image-container {
+    background: linear-gradient(135deg, var(--accent), var(--bg-hover));
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+}
+
+/* Para imágenes con fondo blanco que necesiten transparencia */
+.white-bg-remover {
+    background: transparent;
+    mix-blend-mode: multiply;
+    filter: contrast(1.1) brightness(1.1);
+}
+
+/* Para imágenes oscuras */
+.dark-image-enhancer {
+    filter: brightness(1.2) contrast(1.1);
+    mix-blend-mode: screen;
+}
+
+/* Placeholder para imágenes sin fondo */
+.image-placeholder {
+    background: var(--accent);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    border-radius: 8px;
+}
+
+/* Para drag and drop */
+.drag-active {
+    border: 2px dashed var(--accent) !important;
+    background: rgba(0, 217, 255, 0.1) !important;
+    transform: scale(1.05);
+}
+
+/* Estados de carga */
+.image-loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.image-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255,255,255,0.2), 
+        transparent);
+    animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Para imágenes responsivas */
+.responsive-image {
+    max-width: 100%;
+    height: auto;
+    background: transparent;
+}
+
+/* Grid de imágenes */
+.image-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+.image-grid-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.image-grid-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 217, 255, 0.15);
+}
+
+/* Para imágenes en modo oscuro/claro */
+@media (prefers-color-scheme: dark) {
+    .image-container {
+        filter: brightness(0.95);
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    .image-container {
+        filter: brightness(1.05);
+    }
+}
+
+/* Optimización para diferentes formatos */
+.webp-image {
+    image-rendering: optimizeQuality;
+}
+
+.jpg-image {
+    image-rendering: auto;
+}
+
+.png-image {
+    image-rendering: crisp-edges;
+}
+
+/* Para imágenes animadas */
+.animated-image {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Para imágenes con errores */
+.image-error {
+    background: var(--bg-hover);
+    border: 2px dashed var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    min-height: 100px;
+}
+
+.image-error::before {
+    content: '⚠️ Error al cargar imagen';
+}

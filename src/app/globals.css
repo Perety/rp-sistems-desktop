@@ -1,0 +1,184 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-primary: #0a0e14;
+  --bg-secondary: #151b23;
+  --bg-card: #1a2129;
+  --bg-hover: #222930;
+  --accent: #00d9ff;
+  --accent-hover: #00b8d4;
+  --text-primary: #ffffff;
+  --text-secondary: #8b96a5;
+  --text-muted: #5a6474;
+  --border: rgba(255, 255, 255, 0.06);
+  --danger: #ff4757;
+  --success: #2ed573;
+  --warning: #ffa502;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="blue"] { --accent: #3b82f6; --accent-hover: #2563eb; }
+[data-theme="green"] { --accent: #10b981; --accent-hover: #059669; }
+[data-theme="purple"] { --accent: #8b5cf6; --accent-hover: #7c3aed; }
+[data-theme="red"] { --accent: #ef4444; --accent-hover: #dc2626; }
+[data-theme="cyan"] { --accent: #00d9ff; --accent-hover: #00b8d4; }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Rajdhani', sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+}
+
+/* Componentes redondeados */
+.rounded-panel {
+  border-radius: 16px;
+}
+
+.rounded-card {
+  border-radius: 12px;
+}
+
+.rounded-button {
+  border-radius: 10px;
+}
+
+.rounded-input {
+  border-radius: 10px;
+}
+
+.rounded-modal {
+  border-radius: 20px;
+}
+
+/* Aplicar redondeo global */
+* {
+  border-radius: 8px;
+}
+
+.btn, button, .btn-primary, .btn-secondary, .btn-danger {
+  border-radius: 10px !important;
+}
+
+.card, .panel, .modal-content {
+  border-radius: 16px !important;
+}
+
+input, textarea, select {
+  border-radius: 10px !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--bg-hover); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* Accent utilities */
+.text-accent { color: var(--accent); }
+.bg-accent { background: var(--accent); }
+.border-accent { border-color: var(--accent); }
+.text-danger { color: var(--danger); }
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-muted { color: var(--text-muted); }
+.text-secondary { color: var(--text-secondary); }
+.bg-card { background: var(--bg-card); }
+.bg-secondary { background: var(--bg-secondary); }
+.bg-hover { background: var(--bg-hover); }
+.border-dim { border-color: var(--border); }
+
+/* Form inputs */
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[type="email"],
+input[type="date"],
+select,
+textarea {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.2s;
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Animations */
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes scanLine {
+  0%, 100% { top: 0; }
+  50% { top: calc(100% - 2px); }
+}
+
+@keyframes fadeInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px var(--accent); }
+  50% { box-shadow: 0 0 20px var(--accent), 0 0 40px var(--accent); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: scanLine 1.5s ease-in-out infinite;
+}
