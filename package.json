@@ -1,7 +1,7 @@
 {
   "name": "rp-sistems-desktop",
   "version": "1.0.0",
-  "description": "Aplicación de escritorio para RP-SISTEMS",
+  "description": "Aplicación de escritorio para RP-SISTEMS - Sistema de Radio y Comunicación",
   "main": "main.js",
   "homepage": "./",
   "scripts": {
@@ -19,7 +19,11 @@
     "electron",
     "desktop",
     "radio",
-    "communication"
+    "communication",
+    "voip",
+    "chat",
+    "discord",
+    "webrtc"
   ],
   "author": "RP-SISTEMS Team",
   "license": "MIT",
@@ -29,7 +33,9 @@
   },
   "dependencies": {
     "electron-updater": "^6.1.0",
-    "electron-store": "^8.1.0"
+    "electron-store": "^8.1.0",
+    "express": "^4.18.0",
+    "socket.io": "^4.7.0"
   },
   "build": {
     "appId": "com.rp-sistems.desktop",
@@ -38,23 +44,27 @@
       "output": "dist"
     },
     "files": [
-      "main.js",
-      "preload.js",
-      "index.html",
-      "src/**/*",
       "build/**/*",
-      "package.json"
+      "node_modules/**/*",
+      "package.json",
+      "main.js",
+      "preload.js"
     ],
     "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": ["x64"]
-        }
-      ]
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
     },
     "linux": {
-      "target": ["AppImage"]
+      "target": "AppImage"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "RP-SISTEMS"
     }
   }
 }
