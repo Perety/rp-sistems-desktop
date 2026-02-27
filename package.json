@@ -1,7 +1,7 @@
 {
-  "name": "RP-SISTEMS Desktop",
+  "name": "rp-sistems-desktop",
   "version": "1.0.0",
-  "description": "Aplicación de escritorio para RP-SISTEMS - Sistema de Radio y Comunicación",
+  "description": "Aplicación de escritorio para RP-SISTEMS",
   "main": "main.js",
   "homepage": "./",
   "scripts": {
